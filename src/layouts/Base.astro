@@ -1,0 +1,66 @@
+---
+import '../styles/global.css';
+import { profile } from '../data/profile';
+import card from '../assets/og.jpg';
+
+const title = `${profile.name} | Software, data, and systems`;
+const description =
+  'Computer Science graduate building full-stack apps and data systems. Projects, experience, and how to get in touch.';
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+
+// The 1200x630 card fills link previews (LinkedIn, iMessage, Slack) without cropping.
+// `npm run icons` draws it from scripts/og-card.html.
+const ogUrl = new URL(card.src, Astro.site).href;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: profile.name,
+  email: `mailto:${profile.email}`,
+  url: canonical.href,
+  address: { '@type': 'PostalAddress', addressLocality: 'Yonkers', addressRegion: 'NY', addressCountry: 'US' },
+  alumniOf: { '@type': 'CollegeOrUniversity', name: 'Vassar College' },
+  sameAs: [profile.github, profile.linkedin],
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={profile.name} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href={`${base}favicon.svg`} type="image/svg+xml" />
+    <link rel="apple-touch-icon" href={`${base}apple-touch-icon.png`} />
+    <meta name="theme-color" content="#EDF1F3" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0E171C" media="(prefers-color-scheme: dark)" />
+
+    <meta property="og:type" content="profile" />
+    <meta property="og:site_name" content={profile.name} />
+    <meta property="og:title" content={profile.name} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogUrl} />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${profile.name}: ${profile.headline}`} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <!-- Apply a saved theme before first paint so the page never flashes the wrong colors. -->
+    <script is:inline>
+      try {
+        const t = localStorage.getItem('theme');
+        if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+      } catch {}
+    </script>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

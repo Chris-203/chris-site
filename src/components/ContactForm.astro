@@ -1,0 +1,164 @@
+---
+import { profile } from '../data/profile';
+
+// Without JavaScript the form posts normally and the service sends the visitor back here.
+const back = new URL(`${import.meta.env.BASE_URL.replace(/\/?$/, '/')}?sent=1#contact`, Astro.site).href;
+---
+
+<form class="contact-form no-print" action={profile.form} method="POST">
+  <input type="hidden" name="_subject" value={`New message from ${new URL(Astro.site!).host}`} />
+  <input type="hidden" name="_template" value="table" />
+  <input type="hidden" name="_next" value={back} />
+  <!-- Bots fill in fields people can't see; both services drop those messages. -->
+  <div class="trap" aria-hidden="true">
+    <input type="text" name="_honey" tabindex="-1" autocomplete="off" />
+    <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <div class="row">
+    <label>
+      <span>Name</span>
+      <input type="text" name="name" autocomplete="name" required maxlength="100" />
+    </label>
+    <label>
+      <span>Email</span>
+      <input type="email" name="email" autocomplete="email" required maxlength="200" />
+    </label>
+  </div>
+  <label>
+    <span>Message</span>
+    <textarea name="message" rows="5" required maxlength="5000"></textarea>
+  </label>
+
+  <div class="send">
+    <button class="btn primary" type="submit">Send message</button>
+    <p class="status" role="status" aria-live="polite"></p>
+  </div>
+</form>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('.contact-form')!;
+  const status = form.querySelector<HTMLElement>('.status')!;
+  const button = form.querySelector<HTMLButtonElement>('button')!;
+
+  const say = (text: string, kind: 'ok' | 'bad' | '' = '') => {
+    status.textContent = text;
+    status.dataset.kind = kind;
+  };
+
+  if (new URLSearchParams(location.search).has('sent')) {
+    say('Thanks, your message was sent.', 'ok');
+    history.replaceState(null, '', location.pathname + location.hash);
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    // FormSubmit answers scripts at /ajax/<email>; Formspree answers at the same address.
+    const url = form.action.replace('formsubmit.co/', 'formsubmit.co/ajax/');
+    button.disabled = true;
+    say('Sending…');
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(Object.fromEntries(new FormData(form))),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || String(data.success) === 'false') throw new Error(data.message);
+      form.reset();
+      say('Thanks, your message was sent.', 'ok');
+    } catch {
+      say('That didn’t go through. Please email me instead.', 'bad');
+    } finally {
+      button.disabled = false;
+    }
+  });
+</script>
+
+<style>
+  .contact-form {
+    display: grid;
+    gap: 16px;
+    margin-top: 28px;
+    max-width: 640px;
+    padding: 24px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+  }
+
+  @media (max-width: 480px) {
+    .contact-form {
+      padding: 16px;
+    }
+  }
+
+  .row {
+    display: grid;
+    gap: 16px;
+  }
+
+  @media (min-width: 560px) {
+    .row {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  label {
+    display: grid;
+    gap: 6px;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  input,
+  textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid var(--line);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--ink);
+    font: 400 1rem/1.5 var(--body);
+  }
+
+  input:focus,
+  textarea:focus {
+    border-color: var(--accent);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 8rem;
+  }
+
+  .trap {
+    position: absolute;
+    left: -9999px;
+  }
+
+  .send {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 16px;
+  }
+
+  button:disabled {
+    opacity: 0.6;
+    cursor: progress;
+  }
+
+  .status {
+    font-size: 0.95rem;
+    color: var(--muted);
+  }
+
+  .status[data-kind='ok'] {
+    color: var(--ok);
+  }
+
+  .status[data-kind='bad'] {
+    color: var(--bad);
+  }
+</style>
