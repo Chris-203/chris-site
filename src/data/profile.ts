@@ -47,6 +47,7 @@ export const projects: Project[] = [
     year: 2026,
     text: 'A mobile-friendly tracker and reader for webtoons and manhwa. It keeps your last-read chapter across several sources, flags new chapters, and has a built-in reader with zoom. I wrote serverless relays for the MangaDex API and its images that only answer requests from the app’s own pages, and covered the core logic with unit tests.',
     stack: ['TypeScript', 'React', 'Vite', 'Vercel Functions', 'Vitest', 'REST and GraphQL APIs'],
+    live: 'https://inknexus-psi.vercel.app',
     source: 'https://github.com/Chris-203/inknexus',
   },
   {
