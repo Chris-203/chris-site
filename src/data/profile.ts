@@ -28,9 +28,7 @@ export interface Role {
 
 export const profile = {
   name: 'Christopher Cortazo Rosas',
-  headline: 'I build and fix software and data systems.',
-  intro:
-    'Computer Science graduate (Vassar, 2024) from Yonkers, NY. I’ve built full-stack apps with real logins and payments, cleaned up a company’s CRM, and kept a campus makerspace running. These days I’m building things like a webtoon reader and an app for running a live auction.',
+  tagline: 'Computer Science, Vassar College 2024 · Yonkers, NY',
   email: 'cortazo.christopher@gmail.com',
   /** A PDF in public/. The Resume buttons only show once the file is there. */
   resume: 'resume.pdf',

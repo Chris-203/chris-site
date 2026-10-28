@@ -4,7 +4,7 @@ My personal site: projects, experience, skills, and a way to get in touch, on on
 
 - All content lives in `src/data/profile.ts`. Edit projects, roles, skills, and links there.
   A project with `more: true` goes under "More projects".
-- **Photo:** drop a square photo at `src/assets/headshot.jpg` (or `.png` / `.webp`) and it appears next to the headline.
+- **Photo:** drop a square photo at `src/assets/headshot.jpg` (or `.png` / `.webp`) and it appears next to your name.
 - **Resume:** put the PDF at `public/resume.pdf`; the Resume buttons appear once it's there.
 - **Contact form:** sends through [FormSubmit](https://formsubmit.co) to the email in `profile.form`, no account needed.
   The first message sends a one-time confirmation email; click it and later messages arrive normally.
