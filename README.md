@@ -23,10 +23,9 @@ npm run build    # type check + static build to dist/
 
 ## Deploys
 
-Every push to `main` builds the site and publishes it with GitHub Pages (`.github/workflows/deploy.yml`).
+The site is hosted on Vercel at https://christophercortazo.vercel.app (project `christophercortazo`).
+Every push to `main` deploys it, and every pull request gets a preview.
 
-1. **Settings → Pages → Source: GitHub Actions** (once).
-2. The site is then at `https://chris-203.github.io/chris-site/`.
-3. **Custom domain:** buy the domain, add it under **Settings → Pages → Custom domain**, follow GitHub's DNS
-   steps, then set the repository variable `SITE_URL` (Settings → Secrets and variables → Actions → Variables)
-   to the full address, e.g. `https://christophercortazo.com`, and re-run the Deploy workflow.
+**Custom domain:** buy the domain, add it under the Vercel project's **Settings → Domains** and follow the DNS
+steps, then set the project's `SITE` environment variable to the full address, e.g. `https://christophercortazo.com`,
+and redeploy.
