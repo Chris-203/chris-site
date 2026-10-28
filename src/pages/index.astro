@@ -51,13 +51,12 @@ const more = projects.filter((p) => p.more);
     <div class="wrap" id="top">
       <div class:list={['hero', { 'has-photo': photo }]}>
         <div>
-          <h1>{profile.headline}</h1>
-          <p class="lead">{profile.intro}</p>
+          <h1>{profile.name}</h1>
+          <p class="lead">{profile.tagline}</p>
           <ul class="btns-row cta no-print">
-            <li><a class="btn primary" href={`mailto:${profile.email}`}>Email me</a></li>
+            {resume && <li><a class="btn primary" href={resume}>Resume (PDF)</a></li>}
             <li><a class="btn ghost" href={profile.github} rel="me noopener">GitHub</a></li>
             <li><a class="btn ghost" href={profile.linkedin} rel="me noopener">LinkedIn</a></li>
-            {resume && <li><a class="btn ghost" href={resume}>Resume (PDF)</a></li>}
           </ul>
         </div>
         {photo && <Image class="photo" src={photo} alt={profile.name} width={440} height={440} loading="eager" />}
